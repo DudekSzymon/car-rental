@@ -9,6 +9,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import signupImage from "@/assets/images/register.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -65,16 +66,17 @@ export function SignupForm({
               </Field>
               <Field>
                 <div className="flex items-start gap-2">
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     id="terms-acceptance"
                     checked={termsAccepted}
-                    onChange={(e) => setTermsAccepted(e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border-gray-300 cursor-pointer"
+                    onCheckedChange={(checked) =>
+                      setTermsAccepted(checked === true)
+                    }
+                    className="mt-1"
                   />
                   <label
                     htmlFor="terms-acceptance"
-                    className="text-sm text-muted-foreground cursor-pointer"
+                    className="text-sm text-muted-foreground cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     I accept the{" "}
                     <button
