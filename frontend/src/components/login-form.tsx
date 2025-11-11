@@ -12,11 +12,14 @@ import { Input } from "@/components/ui/input";
 import loginImage from "@/assets/images/login.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { TermsPrivacyModal } from "@/components/terms-privacy-modal";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -91,9 +94,34 @@ export function LoginForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <button
+          type="button"
+          onClick={() => setTermsOpen(true)}
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Terms of Service
+        </button>{" "}
+        and{" "}
+        <button
+          type="button"
+          onClick={() => setPrivacyOpen(true)}
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Privacy Policy
+        </button>
+        .
       </FieldDescription>
+      <TermsPrivacyModal
+        open={termsOpen}
+        onOpenChange={setTermsOpen}
+        type="terms"
+      />
+      <TermsPrivacyModal
+        open={privacyOpen}
+        onOpenChange={setPrivacyOpen}
+        type="privacy"
+      />
     </div>
   );
 }

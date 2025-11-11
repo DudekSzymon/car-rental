@@ -12,10 +12,15 @@ import { Input } from "@/components/ui/input";
 import signupImage from "@/assets/images/register.jpg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { TermsPrivacyModal } from "@/components/terms-privacy-modal";
+
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -59,7 +64,41 @@ export function SignupForm({
                 </FieldDescription>
               </Field>
               <Field>
-                <Button type="submit">Create Account</Button>
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    id="terms-acceptance"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-gray-300 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="terms-acceptance"
+                    className="text-sm text-muted-foreground cursor-pointer"
+                  >
+                    I accept the{" "}
+                    <button
+                      type="button"
+                      onClick={() => setTermsOpen(true)}
+                      className="underline underline-offset-4 hover:text-primary"
+                    >
+                      Terms of Service
+                    </button>{" "}
+                    and{" "}
+                    <button
+                      type="button"
+                      onClick={() => setPrivacyOpen(true)}
+                      className="underline underline-offset-4 hover:text-primary"
+                    >
+                      Privacy Policy
+                    </button>
+                  </label>
+                </div>
+              </Field>
+              <Field>
+                <Button type="submit" disabled={!termsAccepted}>
+                  Create Account
+                </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
@@ -98,10 +137,16 @@ export function SignupForm({
           </div>
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </FieldDescription>
+      <TermsPrivacyModal
+        open={termsOpen}
+        onOpenChange={setTermsOpen}
+        type="terms"
+      />
+      <TermsPrivacyModal
+        open={privacyOpen}
+        onOpenChange={setPrivacyOpen}
+        type="privacy"
+      />
     </div>
   );
 }
