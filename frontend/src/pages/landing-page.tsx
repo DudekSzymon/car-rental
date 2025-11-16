@@ -12,6 +12,7 @@ import landing4 from "@/assets/images/landing-4.jpg";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -86,22 +87,21 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-center">
-              <div className="relative w-full h-full aspect-4/3 bg-muted rounded-xl overflow-hidden">
-                {(() => {
-                  const [loaded, setLoaded] = useState(false);
-                  return (
-                    <img
-                      src={landingHero}
-                      alt="Car rental hero"
-                      onLoad={() => setLoaded(true)}
-                      className={cn(
-                        "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out dark:brightness-[0.2] dark:grayscale",
-                        loaded ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  );
-                })()}
+            <div className="w-full grid grid-cols-1 grid-rows-1 place-items-center relative">
+              {/* Glow effect */}
+              <div className="col-span-full row-span-full w-[327px] aspect-square -z-1 blur-[80px] scale-[1.22] bg-[radial-gradient(ellipse_110%_148%_at_-18%_12%,_#fffeb0_0%,_#f6ffb3_20%,_#cfffae_38%,_#adffe1_57%,_#ace5ff_72%,_#b6b6ff_89%,_#f9b8ff_100%)]"></div>
+
+              {/* Hero image */}
+              <div className="relative col-span-full row-span-full w-full aspect-4/3 bg-muted rounded-xl overflow-hidden [filter:drop-shadow(0px_4px_8px_rgba(0,0,0,0.2))_drop-shadow(0px_8px_16px_rgba(0,0,0,0.04))]">
+                <img
+                  src={landingHero}
+                  alt="Car rental hero"
+                  onLoad={() => setHeroLoaded(true)}
+                  className={cn(
+                    "absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out dark:brightness-[0.2] dark:grayscale",
+                    heroLoaded ? "opacity-100" : "opacity-0"
+                  )}
+                />
               </div>
             </div>
           </div>
