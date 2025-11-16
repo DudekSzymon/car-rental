@@ -33,39 +33,41 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-32">
-        <div className="max-w-3xl mx-auto text-center space-y-8">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Rent a car <span className="text-primary">in seconds</span>
-          </h1>
-          <p className="text-xl text-muted-foreground">
-            Wide selection of vehicles, transparent pricing, and instant booking.
-            Your adventure starts here.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Button
-              size="lg"
-              onClick={() => navigate("/register")}
-              className="text-lg px-8"
-            >
-              Get started
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate("/login")}
-              className="text-lg px-8"
-            >
-              I already have an account
-            </Button>
+      <section className="bg-muted/50">
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="max-w-3xl mx-auto text-center space-y-8">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+              Rent a car <span className="text-primary">in seconds</span>
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Wide selection of vehicles, transparent pricing, and instant booking.
+              Your adventure starts here.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Button
+                size="lg"
+                onClick={() => navigate("/register")}
+                className="text-lg px-8"
+              >
+                Get started
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => navigate("/login")}
+                className="text-lg px-8"
+              >
+                I already have an account
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container mx-auto px-4 py-16">
         <div className="max-w-5xl mx-auto">
-          <Card className="overflow-hidden p-0 bg-muted/50">
+          <Card className="overflow-hidden p-0">
             <CardContent className="p-8 md:p-12">
               <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -121,9 +123,10 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-2 border-primary/20 bg-primary/5">
+      <section className="bg-muted/50">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto">
+            <Card className="border-2 border-primary/20 bg-background">
             <CardContent className="p-12">
               <div className="text-center space-y-6">
                 <div className="inline-flex h-12 w-12 rounded-full bg-primary/10 items-center justify-center mb-4">
@@ -147,6 +150,7 @@ export default function LandingPage() {
               </div>
             </CardContent>
           </Card>
+          </div>
         </div>
       </section>
 
