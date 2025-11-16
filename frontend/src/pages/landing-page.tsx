@@ -13,22 +13,42 @@ import landing4 from "@/assets/images/landing-4.jpg";
 export default function LandingPage() {
   const navigate = useNavigate();
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold">RentCar</span>
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold">RentCar</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-6">
+            <Button variant="ghost" onClick={() => scrollToSection("home")}>
+              Home
+            </Button>
+            <Button variant="ghost" onClick={() => scrollToSection("features")}>
+              Features
+            </Button>
+            <Button variant="ghost" onClick={() => scrollToSection("about")}>
+              About Us
+            </Button>
+          </nav>
+          <div className="flex items-center gap-4">
+            <ModeToggle />
+            <Button variant="ghost" onClick={() => navigate("/login")}>
+              Log in
+            </Button>
+            <Button onClick={() => navigate("/register")}>Sign up</Button>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <ModeToggle />
-          <Button variant="ghost" onClick={() => navigate("/login")}>
-            Log in
-          </Button>
-          <Button onClick={() => navigate("/register")}>Sign up</Button>
-        </div>
-      </div>
+      </header>
 
-      <section className="flex-1">
+      <section id="home" className="flex-1">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
             <div className="flex flex-col gap-6 sm:gap-8 items-start justify-center">
@@ -108,7 +128,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section>
+      <section id="features">
         <div className="container mx-auto max-w-full md:max-w-7xl px-6 py-16 md:py-24">
           <div className="flex flex-col gap-12">
             {/* Header */}
@@ -207,6 +227,104 @@ export default function LandingPage() {
                   />
                 </div>
                 <div className="absolute bottom-0 w-full h-[28.27%] blur-[50px] origin-center [background:radial-gradient(ellipse_100%_250%_at_100%_100%,rgb(255,238,176)_0%,rgb(246,255,179)_20%,rgb(207,255,250)_38%,rgb(173,222,255)_57%,rgb(172,229,255)_72%,rgb(182,182,255)_89%,rgb(249,184,255)_100%)]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="bg-muted/30">
+        <div className="container mx-auto max-w-full md:max-w-7xl px-6 py-16 md:py-24">
+          <div className="flex flex-col gap-12">
+            {/* Header */}
+            <div className="flex flex-col items-center text-center gap-4 md:gap-5">
+              <p className="text-sm font-normal text-muted-foreground">
+                About Us
+              </p>
+              <h2 className="tracking-tight text-4xl font-semibold md:max-w-3xl">
+                Your trusted partner in car rental services
+              </h2>
+              <p className="text-base text-muted-foreground max-w-2xl">
+                We've been providing quality car rental services for years, helping thousands of customers find the perfect vehicle for their needs.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-card text-card-foreground flex flex-col gap-4 border p-6 shadow-sm rounded-xl">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-2xl font-bold text-primary">10,000+</h3>
+                  <div className="text-lg font-semibold">Happy Customers</div>
+                  <div className="text-muted-foreground text-sm">
+                    Thousands of satisfied customers have trusted us with their car rental needs.
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-card text-card-foreground flex flex-col gap-4 border p-6 shadow-sm rounded-xl">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-2xl font-bold text-primary">500+</h3>
+                  <div className="text-lg font-semibold">Vehicles</div>
+                  <div className="text-muted-foreground text-sm">
+                    Wide selection of cars from economy to luxury, all well-maintained and reliable.
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-card text-card-foreground flex flex-col gap-4 border p-6 shadow-sm rounded-xl">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-2xl font-bold text-primary">24/7</h3>
+                  <div className="text-lg font-semibold">Customer Support</div>
+                  <div className="text-muted-foreground text-sm">
+                    Our dedicated team is always here to help you, anytime you need assistance.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card border rounded-xl p-8 md:p-12 shadow-sm">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-2xl md:text-3xl font-semibold">
+                    Our Mission
+                  </h3>
+                  <p className="text-muted-foreground">
+                    At RentCar, we believe that renting a car should be simple, transparent, and accessible to everyone. Our mission is to provide the best car rental experience by offering a wide selection of vehicles, competitive pricing, and exceptional customer service.
+                  </p>
+                  <p className="text-muted-foreground">
+                    We're committed to making your journey smoother, whether you're traveling for business or pleasure, planning a road trip, or just need a temporary replacement vehicle.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-2xl md:text-3xl font-semibold">
+                    Why Choose Us?
+                  </h3>
+                  <ul className="flex flex-col gap-3">
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        No hidden fees - what you see is what you pay
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        Flexible rental periods from hourly to monthly
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        All vehicles regularly serviced and inspected
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="size-5 text-primary mt-0.5 flex-shrink-0" />
+                      <span className="text-muted-foreground">
+                        Easy online booking and management
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
