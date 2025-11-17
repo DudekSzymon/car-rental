@@ -10,7 +10,6 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           <Link
@@ -23,7 +22,6 @@ export default function AboutPage() {
             </span>
           </Link>
 
-          {/* Center Navigation */}
           <nav className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-1">
             <Button variant="ghost" onClick={() => navigate("/")}>
               Home
@@ -49,7 +47,6 @@ export default function AboutPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
         <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
         <div className="container mx-auto px-4 lg:px-8 max-w-5xl text-center">
@@ -67,7 +64,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission & Vision */}
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -110,7 +106,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           <div className="text-center mb-16">
@@ -184,7 +179,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
           <div className="bg-linear-to-br from-primary to-primary/80 rounded-3xl p-8 md:p-12 lg:p-16 text-center shadow-2xl relative overflow-hidden">
@@ -208,7 +202,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t bg-muted/30">
         <div className="container mx-auto px-4 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
