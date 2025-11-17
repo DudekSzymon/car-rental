@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import {
   Car,
   Clock,
   Shield,
@@ -10,6 +17,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 import landingHero from "@/assets/images/landing-hero.jpg";
 import landing1 from "@/assets/images/landing-1.jpg";
 import landing2 from "@/assets/images/landing-2.jpg";
@@ -27,22 +35,37 @@ export default function LandingPage() {
     <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/20">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
         <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link
+            to="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
             <Car className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               RentCar
             </span>
-          </div>
+          </Link>
 
-          {/* Center Navigation */}
-          <nav className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-1">
-            <Button variant="ghost" onClick={() => navigate("/")}>
-              Home
-            </Button>
-            <Button variant="ghost" onClick={() => navigate("/about")}>
-              About
-            </Button>
-          </nav>
+          <NavigationMenu
+            className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            viewport={false}
+          >
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/" className={navigationMenuTriggerStyle()}>
+                    Home
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/about" className={navigationMenuTriggerStyle()}>
+                    About
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
 
           <div className="flex items-center gap-2 sm:gap-4">
             <ModeToggle />
@@ -150,11 +173,9 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="flex flex-col gap-16">
             <div className="flex flex-col items-center text-center gap-4 max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-                <span className="text-sm font-semibold text-primary">
-                  Features
-                </span>
-              </div>
+              <p className="text-sm font-normal text-muted-foreground">
+                Features
+              </p>
               <h2 className="tracking-tight text-4xl md:text-5xl font-bold">
                 Everything you need to rent your{" "}
                 <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
