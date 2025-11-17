@@ -33,6 +33,17 @@ export default function LandingPage() {
               RentCar
             </span>
           </div>
+
+          {/* Center Navigation */}
+          <nav className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-1">
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              Home
+            </Button>
+            <Button variant="ghost" onClick={() => navigate("/about")}>
+              About
+            </Button>
+          </nav>
+
           <div className="flex items-center gap-2 sm:gap-4">
             <ModeToggle />
             <Button
