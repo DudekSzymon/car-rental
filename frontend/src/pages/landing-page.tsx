@@ -196,114 +196,108 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 items-stretch">
-              <div className="bg-card text-card-foreground flex flex-col gap-6 border py-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl relative overflow-hidden md:row-span-2 h-full group">
-                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 relative z-10">
+              <div className="bg-card text-card-foreground flex flex-col justify-between border shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl relative overflow-hidden lg:row-span-2 h-full group pt-8">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="px-6 flex flex-col gap-2 relative z-10 shrink-0">
                   <div className="flex items-center gap-3 mb-1">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Clock className="h-5 w-5 text-primary" />
                     </div>
-                    <div className="text-xl font-bold">Instant booking</div>
+                    <h3 className="text-xl font-bold">Instant booking</h3>
                   </div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     Book your car in seconds with our streamlined process. No
                     paperwork, no hassle.
+                  </p>
+                </div>
+                <div className="mt-6 w-full flex-1 relative overflow-hidden min-h-[250px]">
+                  <div className="absolute inset-0 w-full h-full px-6 pb-6 flex flex-col justify-end items-center">
+                    <img
+                      src={landing1}
+                      alt="Instant booking"
+                      className="w-full h-full object-cover shadow-2xl border rounded-lg rotate-2 scale-95 hover:scale-100 hover:rotate-0 transition-transform duration-500"
+                    />
                   </div>
+                  <div className="absolute bottom-0 w-full h-1/2 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none" />
                 </div>
-                <div className="px-6 flex h-full flex-col z-10 items-center">
-                  <img
-                    src={landing1}
-                    alt="Instant booking"
-                    width="400"
-                    height="282"
-                    loading="lazy"
-                    decoding="async"
-                    className="shadow-2xl border rounded-lg rotate-2 scale-90 hover:scale-95 hover:rotate-1 transition-transform duration-300"
-                  />
-                </div>
-                <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)]" />
               </div>
 
               <div className="bg-card text-card-foreground flex flex-col gap-6 border py-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden group">
-                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 <div className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 relative z-10">
                   <div className="flex items-center gap-3 mb-1">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>
-                    <div className="text-xl font-bold">Multiple locations</div>
+                    <h3 className="text-xl font-bold">Multiple locations</h3>
                   </div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     Pick up and drop off at any of our convenient locations
                     across the city.
-                  </div>
+                  </p>
                 </div>
                 <div className="px-6 flex h-full flex-col z-10 items-center justify-center">
-                  <img
-                    src={landing2}
-                    alt="Multiple locations"
-                    width="400"
-                    height="282"
-                    loading="lazy"
-                    decoding="async"
-                    className="scale-90 rounded-xl shadow-xl hover:scale-95 transition-transform duration-300"
-                  />
-                </div>
-                <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)]" />
-              </div>
-
-              <div className="bg-card text-card-foreground flex flex-col gap-6 border p-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden lg:col-start-2 lg:row-2 md:col-1 md:row-3 group">
-                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="flex flex-col gap-2 relative z-10">
-                  <div className="flex items-center gap-3 mb-1">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <CreditCard className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="text-xl font-bold">Flexible payments</div>
-                  </div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
-                    Pay with credit card, debit card, or digital wallets. We
-                    accept all major payment methods.
-                  </div>
-                </div>
-                <div className="flex h-full flex-col z-10 items-center justify-center">
-                  <div className="scale-90 rounded-2xl overflow-hidden w-[280px] h-[280px] shadow-xl hover:scale-95 transition-transform duration-300">
+                  <div className="w-full h-[200px] overflow-hidden rounded-xl shadow-xl">
                     <img
-                      src={landing3}
-                      alt="Flexible payments"
-                      className="w-full h-full object-cover"
+                      src={landing2}
+                      alt="Multiple locations"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 </div>
-                <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)]" />
+                <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none" />
               </div>
 
-              <div className="bg-card text-card-foreground flex flex-col gap-6 border py-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden lg:col-start-3 lg:row-span-2 lg:row-start-1 md:col-2 md:row-span-2 md:row-start-2 group">
-                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 relative z-10">
+              <div className="bg-card text-card-foreground flex flex-col gap-6 border py-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden lg:col-start-2 lg:row-2 md:col-1 md:row-3 group">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="flex flex-col gap-2 px-6 relative z-10">
                   <div className="flex items-center gap-3 mb-1">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <CreditCard className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold">Flexible payments</h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    Pay with credit card, debit card, or digital wallets. We
+                    accept all major payment methods.
+                  </p>
+                </div>
+                <div className="px-6 flex h-full flex-col z-10 items-center justify-center mt-2">
+                  <div className="w-full h-[200px] overflow-hidden rounded-xl shadow-xl">
+                    <img
+                      src={landing3}
+                      alt="Flexible payments"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                </div>
+                <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none" />
+              </div>
+
+              <div className="bg-card text-card-foreground flex flex-col justify-between border shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden lg:col-start-3 lg:row-span-2 lg:row-start-1 md:col-2 md:row-span-2 md:row-start-2 group pt-8">
+                <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="px-6 flex flex-col gap-2 relative z-10 shrink-0">
+                  <div className="flex items-center gap-3 mb-1">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <Smartphone className="h-5 w-5 text-primary" />
                     </div>
-                    <div className="text-xl font-bold">Mobile app access</div>
+                    <h3 className="text-xl font-bold">Mobile app access</h3>
                   </div>
-                  <div className="text-muted-foreground text-sm leading-relaxed">
+                  <p className="text-muted-foreground text-sm leading-relaxed">
                     Manage your bookings, unlock your car, and get support
                     directly from your phone.
+                  </p>
+                </div>
+                <div className="mt-6 w-full flex-1 relative overflow-hidden min-h-[250px]">
+                  <div className="absolute inset-0 w-full h-full px-6 pb-6 flex flex-col justify-end items-center">
+                    <img
+                      src={landing4}
+                      alt="Mobile app access"
+                      className="w-full h-full object-cover shadow-2xl border rounded-lg -rotate-2 scale-95 hover:scale-100 hover:rotate-0 transition-transform duration-500"
+                    />
                   </div>
+                  <div className="absolute bottom-0 w-full h-1/2 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none" />
                 </div>
-                <div className="px-6 flex h-full flex-col z-10 items-center">
-                  <img
-                    src={landing4}
-                    alt="Mobile app access"
-                    width="437"
-                    height="334"
-                    loading="lazy"
-                    decoding="async"
-                    className="hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)]" />
               </div>
             </div>
           </div>

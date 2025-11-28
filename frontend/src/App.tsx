@@ -7,6 +7,7 @@ import AboutPage from "./pages/about";
 import CarsPage from "./pages/cars";
 import CarDetailsPage from "./pages/car-details";
 import RentalFormPage from "./pages/rental";
+import PaymentPage from "./pages/payment-page";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/cars" element={<CarsPage />} />
           <Route path="/cars/:id" element={<CarDetailsPage />} />
           <Route path="/rental/:id" element={<RentalFormPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -1,9 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -16,7 +21,6 @@ import {
   CalendarIcon,
   Minus,
   Plus,
-  Clock,
   AlertCircle,
   CreditCard,
 } from "lucide-react";
@@ -24,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { TermsPrivacyModal } from "@/components/terms-privacy-modal";
 
 interface CarData {
   id: number;
@@ -45,12 +50,16 @@ export function RentalForm({ car }: RentalFormProps) {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     phone: "",
     email: "",
-    address: "",
+    street: "",
+    houseNumber: "",
     postalCode: "",
     city: "",
     pickupDate: undefined as Date | undefined,
@@ -70,10 +79,15 @@ export function RentalForm({ car }: RentalFormProps) {
 
   const calculateDays = () => {
     if (formData.pickupDate && formData.returnDate) {
+      const start = new Date(formData.pickupDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(formData.returnDate);
+      end.setHours(0, 0, 0, 0);
+
       const diff = Math.ceil(
-        (formData.returnDate.getTime() - formData.pickupDate.getTime()) /
-          (1000 * 60 * 60 * 24)
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
       );
+      if (diff === 0) return 1;
       return diff > 0 ? diff : 0;
     }
     return 0;
@@ -92,7 +106,9 @@ export function RentalForm({ car }: RentalFormProps) {
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
-    if (!formData.address.trim()) newErrors.address = "Address is required";
+    if (!formData.street.trim()) newErrors.street = "Street is required";
+    if (!formData.houseNumber.trim())
+      newErrors.houseNumber = "House number is required";
     if (!formData.postalCode.trim())
       newErrors.postalCode = "Postal code is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
@@ -112,8 +128,7 @@ export function RentalForm({ car }: RentalFormProps) {
     setSubmitted(true);
 
     if (validateForm()) {
-      alert("Reservation submitted! (Demo)");
-      navigate("/cars");
+      navigate("/payment");
     }
   };
 
@@ -134,7 +149,7 @@ export function RentalForm({ car }: RentalFormProps) {
       <Button
         variant="ghost"
         onClick={() => navigate(`/cars/${car.id}`)}
-        className="mb-6"
+        className="mb-6 pl-0 hover:pl-2 transition-all"
         type="button"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />
@@ -146,50 +161,48 @@ export function RentalForm({ car }: RentalFormProps) {
       </h1>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid lg:grid-cols-3 gap-6">
-          <Card className="h-fit">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Your Details</CardTitle>
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          <Card className="shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">Your Details</CardTitle>
+              <CardDescription>
+                Fill in your personal information
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="firstName">First Name*</Label>
-                <Input
-                  id="firstName"
-                  value={formData.firstName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, firstName: e.target.value })
-                  }
-                  placeholder="First Name"
-                  className={cn(
-                    submitted && errors.firstName && "border-destructive"
-                  )}
-                />
-                {submitted && errors.firstName && (
-                  <p className="text-sm text-destructive">{errors.firstName}</p>
-                )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, firstName: e.target.value })
+                    }
+                    placeholder="First Name"
+                    className={cn(
+                      submitted && errors.firstName && "border-destructive"
+                    )}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, lastName: e.target.value })
+                    }
+                    placeholder="Last Name"
+                    className={cn(
+                      submitted && errors.lastName && "border-destructive"
+                    )}
+                  />
+                </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="lastName">Last Name*</Label>
-                <Input
-                  id="lastName"
-                  value={formData.lastName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, lastName: e.target.value })
-                  }
-                  placeholder="Last Name"
-                  className={cn(
-                    submitted && errors.lastName && "border-destructive"
-                  )}
-                />
-                {submitted && errors.lastName && (
-                  <p className="text-sm text-destructive">{errors.lastName}</p>
-                )}
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="phone">Phone Number*</Label>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -202,13 +215,10 @@ export function RentalForm({ car }: RentalFormProps) {
                     submitted && errors.phone && "border-destructive"
                   )}
                 />
-                {submitted && errors.phone && (
-                  <p className="text-sm text-destructive">{errors.phone}</p>
-                )}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="email">Email Address*</Label>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
@@ -221,32 +231,44 @@ export function RentalForm({ car }: RentalFormProps) {
                     submitted && errors.email && "border-destructive"
                   )}
                 />
-                {submitted && errors.email && (
-                  <p className="text-sm text-destructive">{errors.email}</p>
-                )}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="address">Address*</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                  placeholder="Address"
-                  className={cn(
-                    submitted && errors.address && "border-destructive"
-                  )}
-                />
-                {submitted && errors.address && (
-                  <p className="text-sm text-destructive">{errors.address}</p>
-                )}
+              <div className="h-px bg-border my-4" />
+
+              <div className="grid grid-cols-4 gap-4">
+                <div className="col-span-3 space-y-2">
+                  <Label htmlFor="street">Street</Label>
+                  <Input
+                    id="street"
+                    value={formData.street}
+                    onChange={(e) =>
+                      setFormData({ ...formData, street: e.target.value })
+                    }
+                    placeholder="Street"
+                    className={cn(
+                      submitted && errors.street && "border-destructive"
+                    )}
+                  />
+                </div>
+                <div className="col-span-1 space-y-2">
+                  <Label htmlFor="houseNumber">No.</Label>
+                  <Input
+                    id="houseNumber"
+                    value={formData.houseNumber}
+                    onChange={(e) =>
+                      setFormData({ ...formData, houseNumber: e.target.value })
+                    }
+                    placeholder="No."
+                    className={cn(
+                      submitted && errors.houseNumber && "border-destructive"
+                    )}
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="postalCode">Postal Code*</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="postalCode">Postal Code</Label>
                   <Input
                     id="postalCode"
                     value={formData.postalCode}
@@ -258,14 +280,9 @@ export function RentalForm({ car }: RentalFormProps) {
                       submitted && errors.postalCode && "border-destructive"
                     )}
                   />
-                  {submitted && errors.postalCode && (
-                    <p className="text-sm text-destructive">
-                      {errors.postalCode}
-                    </p>
-                  )}
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="city">City*</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
                   <Input
                     id="city"
                     value={formData.city}
@@ -277,22 +294,22 @@ export function RentalForm({ car }: RentalFormProps) {
                       submitted && errors.city && "border-destructive"
                     )}
                   />
-                  {submitted && errors.city && (
-                    <p className="text-sm text-destructive">{errors.city}</p>
-                  )}
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="h-fit">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Your Reservation</CardTitle>
+          <Card className="shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">
+                Reservation Details
+              </CardTitle>
+              <CardDescription>Select dates and options</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label>Start Date*</Label>
+                <div className="space-y-2">
+                  <Label>Start Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -306,7 +323,7 @@ export function RentalForm({ car }: RentalFormProps) {
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.pickupDate
                           ? format(formData.pickupDate, "MM/dd/yyyy")
-                          : "-- / -- / ----"}
+                          : "Select date"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -316,20 +333,17 @@ export function RentalForm({ car }: RentalFormProps) {
                         onSelect={(date) =>
                           setFormData({ ...formData, pickupDate: date })
                         }
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0))
+                        }
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
-                  {submitted && errors.pickupDate && (
-                    <p className="text-sm text-destructive">
-                      {errors.pickupDate}
-                    </p>
-                  )}
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label>End Date*</Label>
+                <div className="space-y-2">
+                  <Label>End Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -343,7 +357,7 @@ export function RentalForm({ car }: RentalFormProps) {
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.returnDate
                           ? format(formData.returnDate, "MM/dd/yyyy")
-                          : "-- / -- / ----"}
+                          : "Select date"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -354,43 +368,33 @@ export function RentalForm({ car }: RentalFormProps) {
                           setFormData({ ...formData, returnDate: date })
                         }
                         disabled={(date) =>
-                          date < (formData.pickupDate || new Date())
+                          date <
+                          (formData.pickupDate ||
+                            new Date(new Date().setHours(0, 0, 0, 0)))
                         }
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
-                  {submitted && errors.returnDate && (
-                    <p className="text-sm text-destructive">
-                      {errors.returnDate}
-                    </p>
-                  )}
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="licenseNumber">Driver's License Number*</Label>
+              <div className="space-y-2">
+                <Label htmlFor="licenseNumber">Driver's License Number</Label>
                 <Input
                   id="licenseNumber"
                   value={formData.licenseNumber}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      licenseNumber: e.target.value,
-                    })
+                    setFormData({ ...formData, licenseNumber: e.target.value })
                   }
-                  placeholder="Driver's License Number"
+                  placeholder="License Number"
                   className={cn(
                     submitted && errors.licenseNumber && "border-destructive"
                   )}
                 />
-                {submitted && errors.licenseNumber && (
-                  <p className="text-sm text-destructive">
-                    {errors.licenseNumber}
-                  </p>
-                )}
               </div>
-              <div className="space-y-1.5">
+
+              <div className="space-y-2">
                 <Label>Number of Drivers</Label>
                 <div className="flex items-center gap-2">
                   <Button
@@ -405,7 +409,7 @@ export function RentalForm({ car }: RentalFormProps) {
                   <Input
                     value={formData.driversCount}
                     readOnly
-                    className="w-20 text-center"
+                    className="w-full text-center"
                   />
                   <Button
                     type="button"
@@ -418,23 +422,25 @@ export function RentalForm({ car }: RentalFormProps) {
                   </Button>
                 </div>
                 {formData.driversCount > 1 && (
-                  <p className="text-sm text-muted-foreground flex items-center gap-1">
+                  <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                     <AlertCircle className="h-3 w-3" />
-                    Additional driver fee: ${(formData.driversCount - 1) * 100}
+                    Additional fee: ${(formData.driversCount - 1) * 100}
                   </p>
                 )}
               </div>
 
-              <Separator className="my-4" />
+              <div className="h-px bg-border my-4" />
 
-              <div>
-                <h3 className="font-semibold mb-1">Invoice Data</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+              <div className="space-y-4">
+                <h3 className="font-medium text-sm text-muted-foreground">
+                  INVOICE DATA (OPTIONAL)
+                </h3>
+                <p className="text-xs text-muted-foreground -mt-3">
                   (Fill in if you need a VAT invoice)
                 </p>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="space-y-1.5">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
                     <Label htmlFor="companyName">Company Name</Label>
                     <Input
                       id="companyName"
@@ -448,7 +454,7 @@ export function RentalForm({ car }: RentalFormProps) {
                       placeholder="Company Name"
                     />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     <Label htmlFor="taxId">Tax ID</Label>
                     <Input
                       id="taxId"
@@ -461,176 +467,174 @@ export function RentalForm({ car }: RentalFormProps) {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="invoiceAddress">Address</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="invoiceAddress">Address</Label>
+                  <Input
+                    id="invoiceAddress"
+                    value={formData.invoiceAddress}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        invoiceAddress: e.target.value,
+                      })
+                    }
+                    placeholder="Address"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="invoicePostalCode">Postal Code</Label>
                     <Input
-                      id="invoiceAddress"
-                      value={formData.invoiceAddress}
+                      id="invoicePostalCode"
+                      value={formData.invoicePostalCode}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          invoiceAddress: e.target.value,
+                          invoicePostalCode: e.target.value,
                         })
                       }
-                      placeholder="Address"
+                      placeholder="Postal Code"
                     />
                   </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="invoicePostalCode">Postal Code</Label>
-                      <Input
-                        id="invoicePostalCode"
-                        value={formData.invoicePostalCode}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            invoicePostalCode: e.target.value,
-                          })
-                        }
-                        placeholder="Postal Code"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="invoiceCity">City</Label>
-                      <Input
-                        id="invoiceCity"
-                        value={formData.invoiceCity}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            invoiceCity: e.target.value,
-                          })
-                        }
-                        placeholder="City"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="invoiceCity">City</Label>
+                    <Input
+                      id="invoiceCity"
+                      value={formData.invoiceCity}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          invoiceCity: e.target.value,
+                        })
+                      }
+                      placeholder="City"
+                    />
                   </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="h-fit">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg">Summary & Payment</CardTitle>
+          <Card className="shadow-xl border-primary/20 bg-muted/10">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">
+                Summary & Payment
+              </CardTitle>
+              <CardDescription>Review costs and proceed</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div>
-                <p className="text-sm font-semibold text-muted-foreground mb-2">
-                  CAR
+                <p className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wider">
+                  Selected Car
                 </p>
-                <div className="flex items-center gap-3">
-                  <Car className="h-6 w-6 text-primary" />
-                  <span className="font-medium">{car.name}</span>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div>
-                <p className="text-sm font-semibold text-muted-foreground mb-2">
-                  GENERAL TERMS
-                </p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-start gap-2">
-                    <Clock className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                    <span>Deposit of ${car.deposit} payable in cash</span>
+                <div className="flex items-center gap-3 bg-background p-3 rounded-lg border">
+                  <div className="bg-primary/10 p-2 rounded-md">
+                    <Car className="h-6 w-6 text-primary" />
                   </div>
-                  <div className="flex items-start gap-2">
-                    <Clock className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                    <span>Daily limit: {car.dailyLimit} km</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Clock className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                    <span>Extra km fee: ${car.extraKmFee.toFixed(2)}/km</span>
+                  <div>
+                    <p className="font-bold text-lg">{car.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {car.brand} • {car.year}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-2">
-                <Checkbox
-                  id="termsAccepted"
-                  checked={formData.termsAccepted}
-                  onCheckedChange={(checked) =>
-                    setFormData({
-                      ...formData,
-                      termsAccepted: checked === true,
-                    })
-                  }
-                  className={cn(
-                    submitted && errors.termsAccepted && "border-destructive"
-                  )}
-                />
-                <div>
-                  <Label
-                    htmlFor="termsAccepted"
-                    className="text-sm font-normal cursor-pointer"
-                  >
-                    I agree to the above terms
-                  </Label>
-                  <button
-                    type="button"
-                    className="block text-sm text-primary hover:underline"
-                  >
-                    Accept requirements
-                  </button>
-                </div>
-              </div>
-              {submitted && errors.termsAccepted && (
-                <p className="text-sm text-destructive">
-                  {errors.termsAccepted}
-                </p>
-              )}
+              <div className="h-px bg-border" />
 
-              <Separator />
-
-              <div className="bg-muted/50 rounded-lg p-4">
-                <p className="text-sm font-semibold text-muted-foreground mb-1">
-                  RENTAL PRICE
-                </p>
-                <div className="flex items-baseline justify-end gap-1">
-                  <span className="text-3xl font-bold">
-                    {days > 0 ? `$${totalPrice}` : "-- "}
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    Rental duration:
                   </span>
-                  <span className="text-sm text-muted-foreground">gross</span>
+                  <span className="font-medium">{days} days</span>
                 </div>
-                {days > 0 && (
-                  <p className="text-sm text-muted-foreground text-right mt-1">
-                    {days} {days === 1 ? "day" : "days"} × ${car.pricePerDay}
-                    /day
-                    {additionalDriverFee > 0 &&
-                      ` + $${additionalDriverFee} (extra drivers)`}
-                  </p>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Price per day:</span>
+                  <span className="font-medium">${car.pricePerDay}</span>
+                </div>
+                {additionalDriverFee > 0 && (
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Extra drivers fee:</span>
+                    <span>+${additionalDriverFee}</span>
+                  </div>
                 )}
+                <div className="h-px bg-border my-2" />
+                <div className="flex justify-between items-end">
+                  <span className="font-bold text-lg">Total</span>
+                  <span className="font-bold text-2xl text-primary">
+                    ${totalPrice}
+                  </span>
+                </div>
               </div>
 
-              <Separator />
-
-              <div>
-                <p className="text-sm font-semibold text-muted-foreground mb-3">
-                  PAYMENT METHOD
-                </p>
-                <div className="flex items-center gap-3 p-3 border rounded-lg bg-background">
-                  <CreditCard className="h-8 w-8 text-primary" />
-                  <span className="font-medium">Online Payment</span>
+              <div className="bg-background rounded-lg border p-4 space-y-4">
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="termsAccepted"
+                    checked={formData.termsAccepted}
+                    onCheckedChange={(c) =>
+                      setFormData({ ...formData, termsAccepted: c === true })
+                    }
+                    className={cn(
+                      submitted && errors.termsAccepted && "border-destructive"
+                    )}
+                  />
+                  <div className="grid gap-1.5 leading-none">
+                    <Label
+                      htmlFor="termsAccepted"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Accept terms and conditions
+                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      By clicking accept, you agree to our{" "}
+                      <button
+                        type="button"
+                        onClick={() => setTermsOpen(true)}
+                        className="underline underline-offset-2 hover:text-primary transition-colors"
+                      >
+                        Terms of Service
+                      </button>{" "}
+                      and{" "}
+                      <button
+                        type="button"
+                        onClick={() => setPrivacyOpen(true)}
+                        className="underline underline-offset-2 hover:text-primary transition-colors"
+                      >
+                        Privacy Policy
+                      </button>
+                      .
+                    </p>
+                  </div>
                 </div>
               </div>
 
               <Button
                 type="submit"
                 size="lg"
-                className="w-full h-12 text-base font-semibold"
-                disabled={days === 0}
+                className="w-full text-base font-semibold shadow-lg mt-4"
+                disabled={days === 0 && calculateDays() === 0}
               >
-                Pay Online
-                <span className="ml-2">→</span>
+                Go to Payment
+                <CreditCard className="ml-2 h-4 w-4" />
               </Button>
             </CardContent>
           </Card>
         </div>
       </form>
+
+      <TermsPrivacyModal
+        open={termsOpen}
+        onOpenChange={setTermsOpen}
+        type="terms"
+      />
+      <TermsPrivacyModal
+        open={privacyOpen}
+        onOpenChange={setPrivacyOpen}
+        type="privacy"
+      />
     </>
   );
 }

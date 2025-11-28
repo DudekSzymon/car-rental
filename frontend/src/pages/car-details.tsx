@@ -109,7 +109,7 @@ const carsData = [
     seats: 5,
     transmission: "Manual",
     image: car4Image,
-    available: false,
+    available: true,
     description: "Compact hatchback perfect for city driving and short trips.",
     features: [
       "Air Conditioning",
