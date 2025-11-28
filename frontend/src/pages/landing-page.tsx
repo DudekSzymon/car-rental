@@ -59,6 +59,13 @@ export default function LandingPage() {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
+                  <Link to="/cars" className={navigationMenuTriggerStyle()}>
+                    Cars
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
                   <Link to="/about" className={navigationMenuTriggerStyle()}>
                     About
                   </Link>

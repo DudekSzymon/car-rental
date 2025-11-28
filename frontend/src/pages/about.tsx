@@ -8,12 +8,16 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Car, Users, Award, Target, Heart, Shield } from "lucide-react";
+import { Car, Award, Target, Heart, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import about1 from "@/assets/images/about-1.jpg";
 import about2 from "@/assets/images/about-2.jpg";
+import aboutVal1 from "@/assets/images/about-1-values.jpg";
+import aboutVal2 from "@/assets/images/about-2-values.jpg";
+import aboutVal3 from "@/assets/images/about-3-values.jpg";
+import aboutVal4 from "@/assets/images/about-4-values.jpg";
 
 export default function AboutPage() {
   const [about1Loaded, setAbout1Loaded] = useState(false);
@@ -46,6 +50,13 @@ export default function AboutPage() {
                 <NavigationMenuLink asChild>
                   <Link to="/" className={navigationMenuTriggerStyle()}>
                     Home
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/cars" className={navigationMenuTriggerStyle()}>
+                    Cars
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -206,58 +217,116 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {[
-              {
-                icon: Heart,
-                title: "Customer First",
-                description:
-                  "Your satisfaction is our top priority. We go above and beyond to ensure every rental experience exceeds expectations.",
-              },
-              {
-                icon: Shield,
-                title: "Trust & Safety",
-                description:
-                  "We maintain the highest standards of vehicle safety and transparent pricing. No hidden fees, no surprises.",
-              },
-              {
-                icon: Users,
-                title: "Community",
-                description:
-                  "We're building a community of travelers and adventurers. Your feedback shapes our service and helps us grow.",
-              },
-              {
-                icon: Target,
-                title: "Innovation",
-                description:
-                  "We constantly evolve our platform with the latest technology to make car rental faster, easier, and more convenient.",
-              },
-              {
-                icon: Award,
-                title: "Quality",
-                description:
-                  "Every vehicle in our fleet is carefully maintained and inspected to ensure you get the best driving experience.",
-              },
-              {
-                icon: Car,
-                title: "Flexibility",
-                description:
-                  "Choose from a wide range of vehicles and rental options that fit your needs and budget. Rent by the hour, day, or week.",
-              },
-            ].map((value, idx) => (
-              <div
-                key={idx}
-                className="bg-card rounded-xl p-6 border shadow-sm hover:shadow-lg transition-all duration-300 group"
-              >
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <value.icon className="h-6 w-6 text-primary" />
+          {/* BENTO GRID */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 items-stretch">
+            <div className="bg-card text-card-foreground flex flex-col justify-between border shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl relative overflow-hidden lg:row-span-2 h-full group pt-8">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+              <div className="px-6 flex flex-col gap-2 relative z-10 shrink-0">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Heart className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Customer First</h3>
                 </div>
-                <h3 className="text-lg font-bold mb-2">{value.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  {value.description}
+                  Your satisfaction is our top priority. We go above and beyond
+                  to ensure every rental experience exceeds expectations.
                 </p>
               </div>
-            ))}
+
+              <div className="mt-6 w-full flex-1 relative overflow-hidden min-h-[250px]">
+                <div className="absolute inset-0 w-full h-full px-6 pb-6 flex flex-col justify-end items-center">
+                  <img
+                    src={aboutVal1}
+                    alt="Customer First"
+                    className="w-full h-full object-cover shadow-2xl border rounded-lg rotate-2 scale-95 hover:scale-100 hover:rotate-0 transition-transform duration-500"
+                  />
+                </div>
+                <div className="absolute bottom-0 w-full h-1/2 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none"></div>
+              </div>
+            </div>
+
+            <div className="bg-card text-card-foreground flex flex-col gap-6 border py-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden group">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div className="grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-6 relative z-10">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Shield className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Trust & Safety</h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  We maintain the highest standards of vehicle safety and
+                  transparent pricing. No hidden fees.
+                </p>
+              </div>
+              <div className="px-6 flex h-full flex-col z-10 items-center justify-center">
+                <div className="w-full h-[200px] overflow-hidden rounded-xl shadow-xl">
+                  <img
+                    src={aboutVal2}
+                    alt="Trust and Safety"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+              <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none"></div>
+            </div>
+
+            <div className="bg-card text-card-foreground flex flex-col gap-6 border py-8 shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden lg:col-start-2 lg:row-2 md:col-1 md:row-3 group">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              <div className="flex flex-col gap-2 px-6 relative z-10">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Award className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Quality</h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Every vehicle in our fleet is carefully maintained and
+                  inspected to ensure the best experience.
+                </p>
+              </div>
+              <div className="px-6 flex h-full flex-col z-10 items-center justify-center mt-2">
+                <div className="w-full h-[200px] overflow-hidden rounded-xl shadow-xl">
+                  <img
+                    src={aboutVal3}
+                    alt="Quality"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              </div>
+              <div className="absolute bottom-0 w-full h-1/3 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none"></div>
+            </div>
+
+            <div className="bg-card text-card-foreground flex flex-col justify-between border shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl h-full relative overflow-hidden lg:col-start-3 lg:row-span-2 lg:row-start-1 md:col-2 md:row-span-2 md:row-start-2 group pt-8">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+              <div className="px-6 flex flex-col gap-2 relative z-10 shrink-0">
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <Car className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Flexibility</h3>
+                </div>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Choose from a wide range of vehicles and rental options that
+                  fit your needs. Rent by the hour, day, or week.
+                </p>
+              </div>
+
+              {/* Zdjęcie POPRAWIONE - teraz ma marginesy i ramkę jak to po lewej */}
+              <div className="mt-6 w-full flex-1 relative overflow-hidden min-h-[250px]">
+                <div className="absolute inset-0 w-full h-full px-6 pb-6 flex flex-col justify-end items-center">
+                  <img
+                    src={aboutVal4}
+                    alt="Flexibility"
+                    className="w-full h-full object-cover shadow-2xl border rounded-lg -rotate-2 scale-95 hover:scale-100 hover:rotate-0 transition-transform duration-500"
+                  />
+                </div>
+                <div className="absolute bottom-0 w-full h-1/2 blur-[60px] opacity-40 [background:radial-gradient(circle_at_center,hsl(var(--primary))_0%,transparent_70%)] pointer-events-none"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
