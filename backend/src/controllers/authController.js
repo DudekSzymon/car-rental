@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const { generateToken } = require("../utils/jwt");
 const { validationResult } = require("express-validator");
+const axios = require("axios");
+const crypto = require("crypto");
 
 const register = async (req, res) => {
   try {
@@ -219,10 +221,85 @@ const changePassword = async (req, res) => {
   }
 };
 
+const googleLogin = async (req, res) => {
+  try {
+    const { accessToken } = req.body;
+
+    const googleResponse = await axios.get(
+      "https://www.googleapis.com/oauth2/v3/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const { email, given_name, family_name, picture } = googleResponse.data;
+
+    let user = await User.findOne({ email });
+
+    if (user) {
+      const token = generateToken(user._id);
+      return res.status(200).json({
+        success: true,
+        message: "Login successful",
+        data: {
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            avatar: user.avatar,
+            createdAt: user.createdAt,
+          },
+          token,
+        },
+      });
+    } else {
+      const randomPassword = crypto.randomBytes(16).toString("hex");
+
+      user = await User.create({
+        firstName: given_name || "User",
+        lastName: family_name || "Google",
+        email: email,
+        password: randomPassword,
+        avatar: picture,
+      });
+
+      const token = generateToken(user._id);
+
+      return res.status(201).json({
+        success: true,
+        message: "Account created successfully!",
+        data: {
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            avatar: user.avatar,
+            createdAt: user.createdAt,
+          },
+          token,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Google login error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during Google login",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getMe,
   updateProfile,
   changePassword,
+  googleLogin,
 };

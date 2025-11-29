@@ -6,6 +6,7 @@ const {
   getMe,
   updateProfile,
   changePassword,
+  googleLogin,
 } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 
@@ -60,7 +61,7 @@ const changePasswordValidation = [
     .isLength({ min: 6 })
     .withMessage("New password must be at least 6 characters"),
 ];
-
+router.post("/google", googleLogin);
 router.post("/register", registerValidation, register);
 router.post("/login", loginValidation, login);
 router.get("/me", protect, getMe);

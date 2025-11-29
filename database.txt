@@ -1,3 +1,0 @@
-username: rentcar
-password: Pbsmk141a!
-connection string: mongodb+srv://rentcar:Pbsmk141a!@cluster0.fc8wwxz.mongodb.net/?appName=Cluster0

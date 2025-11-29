@@ -23,7 +23,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (
+      error.response?.status === 401 &&
+      !error.config.url.includes("/login")
+    ) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       window.location.href = "/login";
@@ -46,6 +49,11 @@ export const authApi = {
 
   login: async (data: { email: string; password: string }) => {
     const response = await api.post("/auth/login", data);
+    return response.data;
+  },
+
+  googleLogin: async (accessToken: string) => {
+    const response = await api.post("/auth/google", { accessToken });
     return response.data;
   },
 
