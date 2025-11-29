@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-// 1. Import useGoogleLogin
 import { useGoogleLogin } from "@react-oauth/google";
 import {
   Field,
@@ -25,7 +24,6 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
-  // 2. Pobieramy googleLogin z kontekstu
   const { register, googleLogin } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -42,7 +40,6 @@ export function SignupForm({
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // 3. Definiujemy obsługę logowania przez Google
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
@@ -259,7 +256,6 @@ export function SignupForm({
                 Or continue with
               </FieldSeparator>
               <Field className="grid grid-cols-1 gap-4">
-                {/* 4. Podpinamy funkcję handleGoogleLogin pod przycisk */}
                 <Button
                   variant="outline"
                   type="button"
