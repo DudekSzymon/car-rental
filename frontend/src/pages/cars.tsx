@@ -1,12 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import {
   Card,
   CardContent,
@@ -15,9 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Car, Fuel, Users, Gauge, Info } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/navbar";
+
 import car1Image from "@/assets/images/car-1.jpg";
 import car2Image from "@/assets/images/car-2.jpg";
 import car3Image from "@/assets/images/car-3.jpg";
@@ -130,62 +124,7 @@ export default function CarsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            <Car className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              RentCar
-            </span>
-          </Link>
-
-          <NavigationMenu
-            className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            viewport={false}
-          >
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/" className={navigationMenuTriggerStyle()}>
-                    Home
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/cars" className={navigationMenuTriggerStyle()}>
-                    Cars
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/about" className={navigationMenuTriggerStyle()}>
-                    About
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
-          <div className="flex items-center gap-2 sm:gap-4">
-            <ModeToggle />
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/login")}
-              className="hidden sm:inline-flex"
-            >
-              Log in
-            </Button>
-            <Button onClick={() => navigate("/register")} size="default">
-              Sign up
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <section className="relative overflow-hidden py-16 md:py-24">
         <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />

@@ -1,17 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Car, Award, Target, Heart, Shield } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import { Navbar } from "@/components/navbar";
+import { useAuth } from "@/context/AuthContext";
+
 import about1 from "@/assets/images/about-1.jpg";
 import about2 from "@/assets/images/about-2.jpg";
 import aboutVal1 from "@/assets/images/about-1-values.jpg";
@@ -22,69 +17,12 @@ import aboutVal4 from "@/assets/images/about-4-values.jpg";
 export default function AboutPage() {
   const [about1Loaded, setAbout1Loaded] = useState(false);
   const [about2Loaded, setAbout2Loaded] = useState(false);
-
-  const navigate = (path: string) => {
-    window.location.href = path;
-  };
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            <Car className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              RentCar
-            </span>
-          </Link>
-
-          <NavigationMenu
-            className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            viewport={false}
-          >
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/" className={navigationMenuTriggerStyle()}>
-                    Home
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/cars" className={navigationMenuTriggerStyle()}>
-                    Cars
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/about" className={navigationMenuTriggerStyle()}>
-                    About
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
-          <div className="flex items-center gap-2 sm:gap-4">
-            <ModeToggle />
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/login")}
-              className="hidden sm:inline-flex"
-            >
-              Log in
-            </Button>
-            <Button onClick={() => navigate("/register")} size="default">
-              Sign up
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <section className="relative overflow-hidden py-20 md:py-32">
         <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/10 pointer-events-none" />
@@ -142,7 +80,9 @@ export default function AboutPage() {
                         world on their own terms. We believe everyone deserves
                         access to reliable transportation without the hassle.
                       </p>
-                      <Button size="lg">Get started</Button>
+                      <Button size="lg" onClick={() => navigate("/cars")}>
+                        Check our fleet
+                      </Button>
                     </div>
                   </div>
                   <div className="relative aspect-video bg-muted rounded-2xl overflow-hidden shadow-2xl border">
@@ -179,7 +119,9 @@ export default function AboutPage() {
                         customer service. We're building a future where renting
                         a car is as easy as a tap on your phone.
                       </p>
-                      <Button size="lg">Learn more</Button>
+                      <Button size="lg" variant="outline">
+                        Learn more
+                      </Button>
                     </div>
                   </div>
                   <div className="relative aspect-video bg-muted rounded-2xl overflow-hidden shadow-2xl border">
@@ -217,7 +159,6 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {/* BENTO GRID */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 items-stretch">
             <div className="bg-card text-card-foreground flex flex-col justify-between border shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl relative overflow-hidden lg:row-span-2 h-full group pt-8">
               <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
@@ -315,7 +256,6 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              {/* Zdjęcie POPRAWIONE - teraz ma marginesy i ramkę jak to po lewej */}
               <div className="mt-6 w-full flex-1 relative overflow-hidden min-h-[250px]">
                 <div className="absolute inset-0 w-full h-full px-6 pb-6 flex flex-col justify-end items-center">
                   <img
@@ -344,10 +284,12 @@ export default function AboutPage() {
               </p>
               <Button
                 size="lg"
-                onClick={() => navigate("/register")}
+                onClick={() =>
+                  navigate(isAuthenticated ? "/cars" : "/register")
+                }
                 className="bg-background text-foreground hover:bg-background/90 px-8 h-12 text-base font-semibold shadow-xl mt-4"
               >
-                Get started now
+                {isAuthenticated ? "Rent now" : "Get started now"}
               </Button>
             </div>
           </div>
