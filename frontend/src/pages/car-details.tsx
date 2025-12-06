@@ -10,11 +10,13 @@ import {
   CheckCircle,
   Shield,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/navbar";
+import { carsApi } from "@/lib/api";
 
 import car1Image from "@/assets/images/car-1.jpg";
 import car2Image from "@/assets/images/car-2.jpg";
@@ -23,153 +25,61 @@ import car4Image from "@/assets/images/car-4.jpg";
 import car5Image from "@/assets/images/car-5.jpg";
 import car6Image from "@/assets/images/car-6.jpg";
 
-const carsData = [
-  {
-    id: 1,
-    name: "Toyota Corolla",
-    brand: "Toyota",
-    year: 2023,
-    pricePerDay: 150,
-    fuelType: "Petrol",
-    seats: 5,
-    transmission: "Automatic",
-    image: car1Image,
-    available: true,
-    description: "Economical and reliable sedan perfect for long trips.",
-    features: [
-      "Air Conditioning",
-      "Bluetooth",
-      "Backup Camera",
-      "GPS Navigation",
-      "Cruise Control",
-      "USB Port",
-    ],
-    enginePower: "140 HP",
-    fuelConsumption: "5.5 L/100km",
-  },
-  {
-    id: 2,
-    name: "BMW 3 Series",
-    brand: "BMW",
-    year: 2024,
-    pricePerDay: 350,
-    fuelType: "Petrol",
-    seats: 5,
-    transmission: "Automatic",
-    image: car2Image,
-    available: true,
-    description: "Sporty sedan with dynamic handling and luxurious interior.",
-    features: [
-      "Leather Seats",
-      "Heated Seats",
-      "Head-up Display",
-      "GPS Navigation",
-      "Apple CarPlay",
-      "Parking Assistant",
-    ],
-    enginePower: "258 HP",
-    fuelConsumption: "7.2 L/100km",
-  },
-  {
-    id: 3,
-    name: "Mercedes-Benz E-Class",
-    brand: "Mercedes-Benz",
-    year: 2024,
-    pricePerDay: 450,
-    fuelType: "Diesel",
-    seats: 5,
-    transmission: "Automatic",
-    image: car3Image,
-    available: true,
-    description: "Luxury sedan with cutting-edge technology and comfort.",
-    features: [
-      "Massage Seats",
-      "Panoramic Roof",
-      "Ambient Lighting",
-      "Burmester Audio",
-      "Drive Assist",
-      "Ventilated Seats",
-    ],
-    enginePower: "220 HP",
-    fuelConsumption: "5.8 L/100km",
-  },
-  {
-    id: 4,
-    name: "Volkswagen Golf",
-    brand: "Volkswagen",
-    year: 2023,
-    pricePerDay: 180,
-    fuelType: "Petrol",
-    seats: 5,
-    transmission: "Manual",
-    image: car4Image,
-    available: true,
-    description: "Compact hatchback perfect for city driving and short trips.",
-    features: [
-      "Air Conditioning",
-      "Bluetooth",
-      "Parking Sensors",
-      "LED Lights",
-      "Cruise Control",
-      "Start-Stop",
-    ],
-    enginePower: "150 HP",
-    fuelConsumption: "6.0 L/100km",
-  },
-  {
-    id: 5,
-    name: "Audi Q5",
-    brand: "Audi",
-    year: 2024,
-    pricePerDay: 400,
-    fuelType: "Diesel",
-    seats: 5,
-    transmission: "Automatic",
-    image: car5Image,
-    available: true,
-    description: "Spacious SUV with quattro all-wheel drive for any weather.",
-    features: [
-      "Quattro AWD",
-      "Virtual Cockpit",
-      "Matrix LED",
-      "3D Navigation",
-      "Bang & Olufsen",
-      "Adaptive Suspension",
-    ],
-    enginePower: "204 HP",
-    fuelConsumption: "6.5 L/100km",
-  },
-  {
-    id: 6,
-    name: "Ford Mustang",
-    brand: "Ford",
-    year: 2023,
-    pricePerDay: 500,
-    fuelType: "Petrol",
-    seats: 4,
-    transmission: "Automatic",
-    image: car6Image,
-    available: true,
-    description: "Iconic muscle car with a powerful V8 engine.",
-    features: [
-      "V8 Engine",
-      "Drive Modes",
-      "Launch Control",
-      "MagneRide",
-      "B&O Premium Audio",
-      "Track Apps",
-    ],
-    enginePower: "450 HP",
-    fuelConsumption: "12.5 L/100km",
-  },
-];
+const imageMap: Record<string, string> = {
+  "car-1.jpg": car1Image,
+  "car-2.jpg": car2Image,
+  "car-3.jpg": car3Image,
+  "car-4.jpg": car4Image,
+  "car-5.jpg": car5Image,
+  "car-6.jpg": car6Image,
+};
+
+interface CarDetails {
+  _id: string;
+  name: string;
+  brand: string;
+  year: number;
+  pricePerDay: number;
+  fuelType: string;
+  seats: number;
+  transmission: string;
+  image: string;
+  available: boolean;
+  description: string;
+  features: string[];
+  enginePower: string;
+  fuelConsumption: string;
+}
 
 export default function CarDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [car, setCar] = useState<CarDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const car = carsData.find((c) => c.id === Number(id));
+  useEffect(() => {
+    const fetchCar = async () => {
+      try {
+        if (!id) return;
+        const response = await carsApi.getById(id);
+        setCar(response.data);
+      } catch (error) {
+        console.error("Failed to fetch car details", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCar();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!car) {
     return (
@@ -202,7 +112,7 @@ export default function CarDetailsPage() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           <div className="relative aspect-video lg:aspect-4/3 rounded-2xl overflow-hidden shadow-2xl bg-muted">
             <img
-              src={car.image}
+              src={imageMap[car.image] || car1Image}
               alt={car.name}
               onLoad={() => setImageLoaded(true)}
               className={cn(
@@ -297,7 +207,7 @@ export default function CarDetailsPage() {
               size="lg"
               className="w-full h-14 text-lg font-semibold"
               disabled={!car.available}
-              onClick={() => navigate(`/rental/${car.id}`)}
+              onClick={() => navigate(`/rental/${car._id}`)}
             >
               <Car className="h-5 w-5 mr-2" />
               {car.available ? "Rent now" : "Car unavailable"}

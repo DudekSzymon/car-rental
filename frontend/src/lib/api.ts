@@ -80,4 +80,35 @@ export const authApi = {
   },
 };
 
+export const carsApi = {
+  getAll: async () => {
+    const response = await api.get("/cars");
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await api.get(`/cars/${id}`);
+    return response.data;
+  },
+};
+
+export const paymentApi = {
+  createPaymentIntent: async (amount: number) => {
+    const response = await api.post("/payments/create-payment-intent", {
+      amount,
+    });
+    return response.data;
+  },
+};
+
+export const rentalsApi = {
+  create: async (data: any) => {
+    const response = await api.post("/rentals", data);
+    return response.data;
+  },
+  getMyRentals: async () => {
+    const response = await api.get("/rentals/my-rentals");
+    return response.data;
+  },
+};
+
 export default api;

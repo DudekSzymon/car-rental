@@ -6,11 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Car, Fuel, Users, Gauge, Info } from "lucide-react";
+import { Car, Fuel, Users, Gauge, Info, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/navbar";
+import { carsApi } from "@/lib/api";
 
 import car1Image from "@/assets/images/car-1.jpg";
 import car2Image from "@/assets/images/car-2.jpg";
@@ -19,88 +20,51 @@ import car4Image from "@/assets/images/car-4.jpg";
 import car5Image from "@/assets/images/car-5.jpg";
 import car6Image from "@/assets/images/car-6.jpg";
 
-const carsData = [
-  {
-    id: 1,
-    name: "Toyota Corolla",
-    brand: "Toyota",
-    year: 2023,
-    pricePerDay: 150,
-    fuelType: "Petrol",
-    seats: 5,
-    transmission: "Automatic",
-    image: car1Image,
-    available: true,
-  },
-  {
-    id: 2,
-    name: "BMW 3 Series",
-    brand: "BMW",
-    year: 2024,
-    pricePerDay: 350,
-    fuelType: "Petrol",
-    seats: 5,
-    transmission: "Automatic",
-    image: car2Image,
-    available: true,
-  },
-  {
-    id: 3,
-    name: "Mercedes-Benz E-Class",
-    brand: "Mercedes-Benz",
-    year: 2024,
-    pricePerDay: 450,
-    fuelType: "Diesel",
-    seats: 5,
-    transmission: "Automatic",
-    image: car3Image,
-    available: true,
-  },
-  {
-    id: 4,
-    name: "Volkswagen Golf",
-    brand: "Volkswagen",
-    year: 2023,
-    pricePerDay: 180,
-    fuelType: "Petrol",
-    seats: 5,
-    transmission: "Manual",
-    image: car4Image,
-    available: true,
-  },
-  {
-    id: 5,
-    name: "Audi Q5",
-    brand: "Audi",
-    year: 2024,
-    pricePerDay: 400,
-    fuelType: "Diesel",
-    seats: 5,
-    transmission: "Automatic",
-    image: car5Image,
-    available: true,
-  },
-  {
-    id: 6,
-    name: "Ford Mustang",
-    brand: "Ford",
-    year: 2023,
-    pricePerDay: 500,
-    fuelType: "Petrol",
-    seats: 4,
-    transmission: "Automatic",
-    image: car6Image,
-    available: true,
-  },
-];
+const imageMap: Record<string, string> = {
+  "car-1.jpg": car1Image,
+  "car-2.jpg": car2Image,
+  "car-3.jpg": car3Image,
+  "car-4.jpg": car4Image,
+  "car-5.jpg": car5Image,
+  "car-6.jpg": car6Image,
+};
+
+interface CarData {
+  _id: string;
+  name: string;
+  brand: string;
+  year: number;
+  pricePerDay: number;
+  fuelType: string;
+  seats: number;
+  transmission: string;
+  image: string;
+  available: boolean;
+}
 
 export default function CarsPage() {
   const navigate = useNavigate();
+  const [cars, setCars] = useState<CarData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [isFiltering, setIsFiltering] = useState(false);
 
-  const handleImageLoad = (carId: number) => {
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await carsApi.getAll();
+        setCars(response.data);
+      } catch (error) {
+        console.error("Failed to fetch cars", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCars();
+  }, []);
+
+  const handleImageLoad = (carId: string) => {
     setLoadedImages((prev) => ({ ...prev, [carId]: true }));
   };
 
@@ -114,13 +78,21 @@ export default function CarsPage() {
 
   const filteredCars = useMemo(() => {
     return selectedCategory === "all"
-      ? carsData
-      : carsData.filter(
+      ? cars
+      : cars.filter(
           (car) => car.brand.toLowerCase() === selectedCategory.toLowerCase()
         );
-  }, [selectedCategory]);
+  }, [selectedCategory, cars]);
 
-  const brands = ["all", ...new Set(carsData.map((car) => car.brand))];
+  const brands = ["all", ...new Set(cars.map((car) => car.brand))];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -136,9 +108,7 @@ export default function CarsPage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Choose the perfect sports car for your thrill-seeking side. From
-            agile coupes to high-performance supercars — experience pure driving
-            adrenaline.
+            Choose the perfect sports car for your thrill-seeking side.
           </p>
         </div>
       </section>
@@ -166,7 +136,7 @@ export default function CarsPage() {
           >
             {filteredCars.map((car) => (
               <Card
-                key={car.id}
+                key={car._id}
                 className={cn(
                   "overflow-hidden transition-all duration-300 hover:shadow-xl group",
                   !car.available && "opacity-60"
@@ -174,17 +144,17 @@ export default function CarsPage() {
               >
                 <div className="relative aspect-video overflow-hidden">
                   <img
-                    src={car.image}
+                    src={imageMap[car.image] || car1Image}
                     alt={car.name}
-                    onLoad={() => handleImageLoad(car.id)}
+                    onLoad={() => handleImageLoad(car._id)}
                     className={cn(
                       "absolute inset-0 h-full w-full object-cover transition-all duration-700 ease-in-out group-hover:scale-105",
-                      loadedImages[car.id]
+                      loadedImages[car._id]
                         ? "opacity-100 scale-100"
                         : "opacity-0 scale-105"
                     )}
                   />
-                  {!loadedImages[car.id] && (
+                  {!loadedImages[car._id] && (
                     <div className="absolute inset-0 bg-muted animate-pulse" />
                   )}
                   {!car.available && (
@@ -232,7 +202,7 @@ export default function CarsPage() {
                   <Button
                     variant="outline"
                     className="flex-1"
-                    onClick={() => navigate(`/cars/${car.id}`)}
+                    onClick={() => navigate(`/cars/${car._id}`)}
                   >
                     <Info className="h-4 w-4 mr-2" />
                     Details
@@ -240,7 +210,7 @@ export default function CarsPage() {
                   <Button
                     className="flex-1"
                     disabled={!car.available}
-                    onClick={() => navigate(`/rental/${car.id}`)}
+                    onClick={() => navigate(`/rental/${car._id}`)}
                   >
                     <Car className="h-4 w-4 mr-2" />
                     Rent

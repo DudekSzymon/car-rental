@@ -31,7 +31,7 @@ import { format } from "date-fns";
 import { TermsPrivacyModal } from "@/components/terms-privacy-modal";
 
 interface CarData {
-  id: number;
+  _id: string;
   name: string;
   brand: string;
   year: number;
@@ -128,7 +128,22 @@ export function RentalForm({ car }: RentalFormProps) {
     setSubmitted(true);
 
     if (validateForm()) {
-      navigate("/payment");
+      const rentalData = {
+        carId: car._id,
+        startDate: formData.pickupDate,
+        endDate: formData.returnDate,
+        totalPrice: totalPrice,
+        driverDetails: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          licenseNumber: formData.licenseNumber,
+          street: formData.street,
+          city: formData.city,
+          postalCode: formData.postalCode,
+        },
+      };
+      navigate("/payment", { state: { rentalData } });
     }
   };
 
@@ -148,7 +163,7 @@ export function RentalForm({ car }: RentalFormProps) {
     <>
       <Button
         variant="ghost"
-        onClick={() => navigate(`/cars/${car.id}`)}
+        onClick={() => navigate(`/cars/${car._id}`)}
         className="mb-6 pl-0 hover:pl-2 transition-all"
         type="button"
       >

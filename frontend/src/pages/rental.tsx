@@ -1,89 +1,51 @@
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { Car, ArrowLeft } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Car, ArrowLeft, Loader2 } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { RentalForm } from "@/components/rental-form";
-const carsData = [
-  {
-    id: 1,
-    name: "Toyota Corolla",
-    brand: "Toyota",
-    year: 2023,
-    pricePerDay: 150,
-    available: true,
-    deposit: 500,
-    dailyLimit: 250,
-    extraKmFee: 0.5,
-  },
-  {
-    id: 2,
-    name: "BMW 3 Series",
-    brand: "BMW",
-    year: 2024,
-    pricePerDay: 350,
-    available: true,
-    deposit: 1000,
-    dailyLimit: 300,
-    extraKmFee: 0.75,
-  },
-  {
-    id: 3,
-    name: "Mercedes-Benz E-Class",
-    brand: "Mercedes-Benz",
-    year: 2024,
-    pricePerDay: 450,
-    available: true,
-    deposit: 1500,
-    dailyLimit: 300,
-    extraKmFee: 1.0,
-  },
-  {
-    id: 4,
-    name: "Volkswagen Golf",
-    brand: "Volkswagen",
-    year: 2023,
-    pricePerDay: 180,
-    available: false,
-    deposit: 500,
-    dailyLimit: 250,
-    extraKmFee: 0.5,
-  },
-  {
-    id: 5,
-    name: "Audi Q5",
-    brand: "Audi",
-    year: 2024,
-    pricePerDay: 400,
-    available: true,
-    deposit: 1200,
-    dailyLimit: 300,
-    extraKmFee: 0.8,
-  },
-  {
-    id: 6,
-    name: "Ford Mustang",
-    brand: "Ford",
-    year: 2023,
-    pricePerDay: 500,
-    available: true,
-    deposit: 2000,
-    dailyLimit: 200,
-    extraKmFee: 1.5,
-  },
-];
+import { Navbar } from "@/components/navbar";
+import { useEffect, useState } from "react";
+import { carsApi } from "@/lib/api";
+
+interface CarData {
+  _id: string;
+  name: string;
+  brand: string;
+  year: number;
+  pricePerDay: number;
+  available: boolean;
+  deposit: number;
+  dailyLimit: number;
+  extraKmFee: number;
+}
 
 export default function RentalPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [car, setCar] = useState<CarData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const car = carsData.find((c) => c.id === Number(id));
+  useEffect(() => {
+    const fetchCar = async () => {
+      try {
+        if (!id) return;
+        const response = await carsApi.getById(id);
+        setCar(response.data);
+      } catch (error) {
+        console.error("Failed to fetch car", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCar();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!car) {
     return (
@@ -101,52 +63,7 @@ export default function RentalPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            <Car className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              RentCar
-            </span>
-          </Link>
-
-          <NavigationMenu
-            className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            viewport={false}
-          >
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/" className={navigationMenuTriggerStyle()}>
-                    Home
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/cars" className={navigationMenuTriggerStyle()}>
-                    Cars
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/about" className={navigationMenuTriggerStyle()}>
-                    About
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
-          <div className="flex items-center gap-2 sm:gap-4">
-            <ModeToggle />
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <div className="container mx-auto px-4 lg:px-8 py-8">
         <RentalForm car={car} />

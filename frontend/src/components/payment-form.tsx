@@ -7,130 +7,114 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
+  useStripe,
+  useElements,
+  PaymentElement,
+} from "@stripe/react-stripe-js";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { rentalsApi } from "@/lib/api";
 
-export function PaymentForm() {
+interface PaymentFormProps {
+  rentalData: any;
+  clientSecret: string;
+}
+
+export function PaymentForm({ rentalData }: PaymentFormProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const navigate = useNavigate();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+    });
+
+    if (error) {
+      setErrorMessage(error.message ?? "An unknown error occurred");
+      setIsProcessing(false);
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      try {
+        await rentalsApi.create(rentalData);
+        toast.success("Payment successful! Car rented.");
+        navigate("/");
+      } catch (backendError: any) {
+        console.error(backendError);
+        toast.error(
+          "Payment succeeded but reservation failed. Contact support."
+        );
+      }
+    } else {
+      setIsProcessing(false);
+    }
+  };
+
   return (
-    <Card className="w-full max-w-md mx-auto shadow-xl">
+    <Card className="w-full max-w-md mx-auto shadow-xl transition-colors duration-300">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Payment Method</CardTitle>
+        <CardTitle className="text-xl font-bold">Secure Payment</CardTitle>
         <CardDescription>
-          All transactions are secure and encrypted
+          Total amount:{" "}
+          <span className="font-bold text-primary">
+            ${rentalData.totalPrice}
+          </span>
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name">Name on Card</Label>
-          <Input id="name" placeholder="John Doe" />
-        </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2 space-y-2">
-            <Label htmlFor="number">Card Number</Label>
-            <Input id="number" placeholder="1234 5678 9012 3456" />
-            <p className="text-[0.8rem] text-muted-foreground">
-              Enter your 16-digit number.
-            </p>
-          </div>
-          <div className="col-span-1 space-y-2">
-            <Label htmlFor="cvv">CVV</Label>
-            <Input id="cvv" placeholder="123" maxLength={3} />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>Month</Label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="MM" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                  <SelectItem
-                    key={month}
-                    value={month.toString().padStart(2, "0")}
-                  >
-                    {month.toString().padStart(2, "0")}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>Year</Label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="YYYY" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from(
-                  { length: 10 },
-                  (_, i) => new Date().getFullYear() + i
-                ).map((year) => (
-                  <SelectItem key={year} value={year.toString()}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Separator */}
-        <div className="h-px bg-border" />
-
-        {/* Billing Address */}
-        <div className="space-y-4">
-          <div className="space-y-1">
-            <h3 className="font-medium leading-none">Billing Address</h3>
-            <p className="text-sm text-muted-foreground">
-              The billing address associated with your payment method
-            </p>
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-6">
+          <div className="min-h-[200px]">
+            <PaymentElement />
           </div>
 
-          <div className="flex items-center space-x-2">
-            <Checkbox id="billing" defaultChecked />
-            <Label
-              htmlFor="billing"
-              className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Same as shipping address
-            </Label>
-          </div>
-        </div>
+          {errorMessage && (
+            <div className="text-sm text-destructive font-medium bg-destructive/10 p-3 rounded-md border border-destructive/20">
+              {errorMessage}
+            </div>
+          )}
+        </CardContent>
 
-        <div className="h-px bg-border" />
-
-        <div className="space-y-2">
-          <Label htmlFor="comments">Comments</Label>
-          <Textarea
-            id="comments"
-            placeholder="Add any additional comments"
-            className="resize-none min-h-20"
-          />
-        </div>
-      </CardContent>
-
-      <CardFooter className="flex flex-row items-center gap-3 w-full pt-2">
-        <Button className="flex-1" type="submit">
-          Submit
-        </Button>
-        <Button variant="outline" className="flex-1" type="button">
-          Cancel
-        </Button>
-      </CardFooter>
+        <CardFooter className="flex flex-col gap-3 mt-4">
+          <Button
+            className="w-full h-11 text-md font-semibold"
+            type="submit"
+            disabled={!stripe || isProcessing}
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              `Pay $${rentalData.totalPrice}`
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            type="button"
+            onClick={() => navigate(-1)}
+            disabled={isProcessing}
+          >
+            Cancel
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
   );
 }

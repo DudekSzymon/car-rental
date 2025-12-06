@@ -1,14 +1,14 @@
 const express = require("express");
 const authRoutes = require("./authRoutes");
+const carRoutes = require("./carRoutes");
+const paymentRoutes = require("./paymentRoutes");
+const rentalRoutes = require("./rentalRoutes");
 
 const router = express.Router();
 
-// Mount routes
 router.use("/auth", authRoutes);
-
-// Future routes will be added here:
-// router.use('/cars', carRoutes);
-// router.use('/rentals', rentalRoutes);
-// router.use('/payments', paymentRoutes);
+router.use("/cars", carRoutes);
+router.use("/payments", paymentRoutes);
+router.use("/rentals", rentalRoutes);
 
 module.exports = router;
