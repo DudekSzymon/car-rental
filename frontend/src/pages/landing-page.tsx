@@ -80,7 +80,7 @@ export default function LandingPage() {
                   }
                   className="px-8 h-12 text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
                 >
-                  {isAuthenticated ? "Rent now" : "Get started"}
+                  {isAuthenticated ? "Book your ride" : "Get started"}
                 </Button>
 
                 {!isAuthenticated && (
