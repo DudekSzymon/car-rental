@@ -25,22 +25,22 @@ export default function AdminCars() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Czy na pewno chcesz usunąć to auto?")) return;
+    if (!confirm("Are you sure you want to remove this car?")) return;
     try {
       await adminApi.deleteCar(id);
-      toast.success("Auto usunięte");
+      toast.success("Car removed successfully");
       fetchCars();
     } catch (err) {
-      toast.error("Błąd podczas usuwania");
+      toast.error("Error deleting car");
     }
   };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Zarządzanie Flotą</h1>
+        <h1 className="text-2xl font-bold">Fleet Management</h1>
         <Button>
-          <Plus className="mr-2 h-4 w-4" /> Dodaj Auto
+          <Plus className="mr-2 h-4 w-4" /> Add Car
         </Button>
       </div>
 
@@ -48,10 +48,10 @@ export default function AdminCars() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nazwa</TableHead>
-              <TableHead>Marka</TableHead>
-              <TableHead>Cena/dzień</TableHead>
-              <TableHead>Akcje</TableHead>
+              <TableHead>Model</TableHead>
+              <TableHead>Brand</TableHead>
+              <TableHead>Price / Day</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

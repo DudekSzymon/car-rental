@@ -7,6 +7,7 @@ const {
   updateProfile,
   changePassword,
   googleLogin,
+  getAllUsers,
 } = require("../controllers/authController");
 const { protect } = require("../middleware/auth");
 
@@ -72,5 +73,6 @@ router.put(
   changePasswordValidation,
   changePassword
 );
+router.get("/users", protect, getAllUsers);
 
 module.exports = router;

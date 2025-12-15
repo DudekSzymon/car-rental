@@ -12,6 +12,8 @@ import PaymentPage from "./pages/payment-page";
 import { Toaster } from "@/components/ui/sonner";
 import AdminLayout from "@/layouts/AdminLayout";
 import CarsManager from "@/pages/admin/CarsManager";
+import UsersManager from "@/pages/admin/UsersManager";
+import RentalsManager from "@/pages/admin/RentalsManager";
 
 function App() {
   return (
@@ -44,22 +46,8 @@ function App() {
                 }
               />
               <Route path="cars" element={<CarsManager />} />
-              <Route
-                path="rentals"
-                element={
-                  <div className="p-6 text-xl">
-                    Rentals Management (Coming Soon)
-                  </div>
-                }
-              />
-              <Route
-                path="users"
-                element={
-                  <div className="p-6 text-xl">
-                    Users Management (Coming Soon)
-                  </div>
-                }
-              />
+              <Route path="rentals" element={<RentalsManager />} />
+              <Route path="users" element={<UsersManager />} />
             </Route>
           </Routes>
         </BrowserRouter>
