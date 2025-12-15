@@ -111,4 +111,33 @@ export const rentalsApi = {
   },
 };
 
+export const adminApi = {
+  createCar: async (data: any) => {
+    const response = await api.post("/cars", data);
+    return response.data;
+  },
+  deleteCar: async (id: string) => {
+    const response = await api.delete(`/cars/${id}`);
+    return response.data;
+  },
+  updateCar: async (id: string, data: any) => {
+    const response = await api.put(`/cars/${id}`, data);
+    return response.data;
+  },
+
+  getAllRentals: async () => {
+    const response = await api.get("/rentals/all");
+    return response.data;
+  },
+  updateRentalStatus: async (id: string, status: string) => {
+    const response = await api.put(`/rentals/${id}/status`, { status });
+    return response.data;
+  },
+
+  getAllUsers: async () => {
+    const response = await api.get("/auth/users");
+    return response.data;
+  },
+};
+
 export default api;
