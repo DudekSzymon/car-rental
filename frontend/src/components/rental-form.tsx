@@ -25,10 +25,11 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { TermsPrivacyModal } from "@/components/terms-privacy-modal";
+import { rentalsApi } from "@/lib/api";
 
 interface CarData {
   _id: string;
@@ -47,6 +48,30 @@ interface RentalFormProps {
 }
 
 export function RentalForm({ car }: RentalFormProps) {
+  const [bookedDates, setBookedDates] = useState<{ start: Date; end: Date }[]>(
+    [],
+  );
+
+  useEffect(() => {
+    rentalsApi.getCarRentals(car._id).then((res) => {
+      const formatted = res.data.map((r: any) => ({
+        start: new Date(r.startDate),
+        end: new Date(r.endDate),
+      }));
+      setBookedDates(formatted);
+    });
+  }, [car._id]);
+
+  const isDateDisabled = (date: Date) => {
+    // Blokuj przeszłość
+    if (date < new Date(new Date().setHours(0, 0, 0, 0))) return true;
+    return bookedDates.some(
+      (range) =>
+        date >= new Date(range.start.setHours(0, 0, 0, 0)) &&
+        date <= new Date(range.end.setHours(23, 59, 59, 999)),
+    );
+  };
+
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
@@ -85,7 +110,7 @@ export function RentalForm({ car }: RentalFormProps) {
       end.setHours(0, 0, 0, 0);
 
       const diff = Math.ceil(
-        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
       );
       if (diff === 0) return 1;
       return diff > 0 ? diff : 0;
@@ -196,7 +221,7 @@ export function RentalForm({ car }: RentalFormProps) {
                     }
                     placeholder="First Name"
                     className={cn(
-                      submitted && errors.firstName && "border-destructive"
+                      submitted && errors.firstName && "border-destructive",
                     )}
                   />
                 </div>
@@ -210,7 +235,7 @@ export function RentalForm({ car }: RentalFormProps) {
                     }
                     placeholder="Last Name"
                     className={cn(
-                      submitted && errors.lastName && "border-destructive"
+                      submitted && errors.lastName && "border-destructive",
                     )}
                   />
                 </div>
@@ -227,7 +252,7 @@ export function RentalForm({ car }: RentalFormProps) {
                   }
                   placeholder="Phone Number"
                   className={cn(
-                    submitted && errors.phone && "border-destructive"
+                    submitted && errors.phone && "border-destructive",
                   )}
                 />
               </div>
@@ -243,7 +268,7 @@ export function RentalForm({ car }: RentalFormProps) {
                   }
                   placeholder="Email Address"
                   className={cn(
-                    submitted && errors.email && "border-destructive"
+                    submitted && errors.email && "border-destructive",
                   )}
                 />
               </div>
@@ -261,7 +286,7 @@ export function RentalForm({ car }: RentalFormProps) {
                     }
                     placeholder="Street"
                     className={cn(
-                      submitted && errors.street && "border-destructive"
+                      submitted && errors.street && "border-destructive",
                     )}
                   />
                 </div>
@@ -275,7 +300,7 @@ export function RentalForm({ car }: RentalFormProps) {
                     }
                     placeholder="No."
                     className={cn(
-                      submitted && errors.houseNumber && "border-destructive"
+                      submitted && errors.houseNumber && "border-destructive",
                     )}
                   />
                 </div>
@@ -292,7 +317,7 @@ export function RentalForm({ car }: RentalFormProps) {
                     }
                     placeholder="Postal Code"
                     className={cn(
-                      submitted && errors.postalCode && "border-destructive"
+                      submitted && errors.postalCode && "border-destructive",
                     )}
                   />
                 </div>
@@ -306,7 +331,7 @@ export function RentalForm({ car }: RentalFormProps) {
                     }
                     placeholder="City"
                     className={cn(
-                      submitted && errors.city && "border-destructive"
+                      submitted && errors.city && "border-destructive",
                     )}
                   />
                 </div>
@@ -332,12 +357,14 @@ export function RentalForm({ car }: RentalFormProps) {
                         className={cn(
                           "w-full justify-start text-left font-normal",
                           !formData.pickupDate && "text-muted-foreground",
-                          submitted && errors.pickupDate && "border-destructive"
+                          submitted &&
+                            errors.pickupDate &&
+                            "border-destructive",
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.pickupDate
-                          ? format(formData.pickupDate, "MM/dd/yyyy")
+                          ? format(formData.pickupDate, "dd/MM/yyyy")
                           : "Select date"}
                       </Button>
                     </PopoverTrigger>
@@ -348,9 +375,7 @@ export function RentalForm({ car }: RentalFormProps) {
                         onSelect={(date) =>
                           setFormData({ ...formData, pickupDate: date })
                         }
-                        disabled={(date) =>
-                          date < new Date(new Date().setHours(0, 0, 0, 0))
-                        }
+                        disabled={isDateDisabled}
                         initialFocus
                       />
                     </PopoverContent>
@@ -366,12 +391,14 @@ export function RentalForm({ car }: RentalFormProps) {
                         className={cn(
                           "w-full justify-start text-left font-normal",
                           !formData.returnDate && "text-muted-foreground",
-                          submitted && errors.returnDate && "border-destructive"
+                          submitted &&
+                            errors.returnDate &&
+                            "border-destructive",
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {formData.returnDate
-                          ? format(formData.returnDate, "MM/dd/yyyy")
+                          ? format(formData.returnDate, "dd/MM/yyyy")
                           : "Select date"}
                       </Button>
                     </PopoverTrigger>
@@ -383,9 +410,10 @@ export function RentalForm({ car }: RentalFormProps) {
                           setFormData({ ...formData, returnDate: date })
                         }
                         disabled={(date) =>
-                          date <
-                          (formData.pickupDate ||
-                            new Date(new Date().setHours(0, 0, 0, 0)))
+                          isDateDisabled(date) ||
+                          (formData.pickupDate
+                            ? date < formData.pickupDate
+                            : false)
                         }
                         initialFocus
                       />
@@ -404,7 +432,7 @@ export function RentalForm({ car }: RentalFormProps) {
                   }
                   placeholder="License Number"
                   className={cn(
-                    submitted && errors.licenseNumber && "border-destructive"
+                    submitted && errors.licenseNumber && "border-destructive",
                   )}
                 />
               </div>
@@ -593,7 +621,7 @@ export function RentalForm({ car }: RentalFormProps) {
                       setFormData({ ...formData, termsAccepted: c === true })
                     }
                     className={cn(
-                      submitted && errors.termsAccepted && "border-destructive"
+                      submitted && errors.termsAccepted && "border-destructive",
                     )}
                   />
                   <div className="grid gap-1.5 leading-none">

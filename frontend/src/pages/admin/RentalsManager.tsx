@@ -35,6 +35,11 @@ interface Rental {
   endDate: string;
   totalPrice: number;
   status: string;
+  // Dodano informację o tym, kto zmodyfikował status
+  lastModifiedBy?: {
+    firstName: string;
+    lastName: string;
+  };
 }
 
 export default function RentalsManager() {
@@ -58,10 +63,20 @@ export default function RentalsManager() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await adminApi.updateRentalStatus(id, newStatus);
+      const res = await adminApi.updateRentalStatus(id, newStatus);
       toast.success(`Status updated to ${newStatus}`);
+
+      // Aktualizujemy lokalny stan danymi z serwera (zawierającymi lastModifiedBy)
       setRentals(
-        rentals.map((r) => (r._id === id ? { ...r, status: newStatus } : r))
+        rentals.map((r) =>
+          r._id === id
+            ? {
+                ...r,
+                status: newStatus,
+                lastModifiedBy: res.data.lastModifiedBy,
+              }
+            : r,
+        ),
       );
     } catch (error) {
       toast.error("Failed to update status");
@@ -108,6 +123,7 @@ export default function RentalsManager() {
               <TableHead>Dates</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Modified By</TableHead> {/* Nowa kolumna */}
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -115,7 +131,7 @@ export default function RentalsManager() {
             {rentals.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={7}
                   className="text-center py-10 text-muted-foreground"
                 >
                   No rentals found.
@@ -184,6 +200,23 @@ export default function RentalsManager() {
                     >
                       {rental.status}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {rental.lastModifiedBy ? (
+                      <div className="flex flex-col text-xs">
+                        <span className="font-medium">
+                          {rental.lastModifiedBy.firstName}{" "}
+                          {rental.lastModifiedBy.lastName}
+                        </span>
+                        <span className="text-muted-foreground italic text-[10px]">
+                          Administrator
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground text-xs italic">
+                        Initial / System
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <Select

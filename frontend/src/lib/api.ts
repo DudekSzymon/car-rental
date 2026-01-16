@@ -17,7 +17,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 api.interceptors.response.use(
@@ -32,7 +32,7 @@ api.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const authApi = {
@@ -107,6 +107,10 @@ export const rentalsApi = {
   },
   getMyRentals: async () => {
     const response = await api.get("/rentals/my-rentals");
+    return response.data;
+  },
+  getCarRentals: async (carId: string) => {
+    const response = await api.get(`/rentals/car/${carId}`);
     return response.data;
   },
 };

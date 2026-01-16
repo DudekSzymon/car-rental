@@ -29,6 +29,10 @@ const rentalSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "cancelled", "completed"],
       default: "confirmed",
     },
+    lastModifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     driverDetails: {
       firstName: String,
       lastName: String,
@@ -39,7 +43,7 @@ const rentalSchema = new mongoose.Schema(
       postalCode: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Rental", rentalSchema);
